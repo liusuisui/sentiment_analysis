@@ -68,28 +68,47 @@ for i in range(len(test['review'])):
 #print len(test_data)
 
 # 特征处理
+from sklearn.feature_extraction.text import CountVectorizer
 
-from sklearn.feature_extraction.text import TfidfVectorizer as TFIDF
+# bag of words tool
 
-tfidf = TFIDF(min_df=2, #最小支持度2
-            max_features=None,
-            strip_accents='unicode',
-            analyzer='word',
-            token_pattern=r'\w{1,}',
-            ngram_range=(1,3),
-            use_idf=1,
-            smooth_idf=1,
-            sublinear_tf=1,
-            stop_words = 'english')
+vectorizer = CountVectorizer(analyzer = "word",
+                          tokenizer = None,
+                          preprocessor = None,
+                          stop_words = 'english',
+                          max_features = 5000)
 
-# 合并训练街和测试集以便进行TFIDF向量化操作
 data_all = train_data + test_data
-#print type(data_all)
-
 len_train = len(train_data)
 
-tfidf.fit(data_all)
-data_all = tfidf.transform(data_all)
+#tfidf.fit(data_all)
+
+data_all = vectorizer.fit_transform(data_all)
+
+data_all = data_all.toarray()
+#print type(data_all)
+print data_all[0]
+#exit(0)
+#from sklearn.feature_extraction.text import TfidfVectorizer as TFIDF
+
+#3tfidf = TFIDF(min_df=2, #最小支持度2
+#           max_features=None,
+#            strip_accents='unicode',
+#            analyzer='word',
+#            token_pattern=r'\w{1,}',
+#            ngram_range=(1,3),
+#            use_idf=1,
+#            smooth_idf=1,
+#            sublinear_tf=1,
+#            stop_words = 'english')
+# 合并训练街和测试集以便进行TFIDF向量化操作
+#data_all = train_data + test_data
+#print type(data_all)
+
+#len_train = len(train_data)
+
+#tfidf.fit(data_all)
+#data_all = tfidf.transform(data_all)
 #print type(data_all)
 # 恢复成训练集和测试集部分
 
@@ -97,8 +116,8 @@ train_x = data_all[:len_train]
 test_x = data_all[len_train:]
 
 #print len(train_x)
-
-print 'TFIDF处理结束'
+print 'bag of words处理结束！'
+#print 'TFIDF处理结束'
 
 
 from xgboost import XGBClassifier
